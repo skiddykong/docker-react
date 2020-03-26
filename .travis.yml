@@ -1,0 +1,10 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t skiddykong/docker-react -f Dockerfile.dev .
+
+# default npm run test does not exit on completion so add -- --coverage
+script:
+  - docker run -e CI=true skiddykong/docker-react npm run test -- --coverage
