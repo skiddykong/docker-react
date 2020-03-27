@@ -8,3 +8,22 @@ before_install:
 # default npm run test does not exit on completion so add -- --coverage
 script:
   - docker run -e CI=true skiddykong/docker-react npm run test -- --coverage
+
+deploy:
+  edge: true # workaround for travis bug
+  provide: elasticbeanstalk
+  region: "us-east-1"
+  app: "frontend"
+  env: "Frontend-env"
+  # travis zips up files to deploy and sends to aws S3 bucket
+  # EB creates bucket automatically, search for it in S3
+  bucket_name: "elasticbeanstalk-us-east-1-030693593017"
+  # bucket has folder for each app, created on first deployment
+  # defaults to the app name
+  bucket_path: "frontend"
+  on:
+    branch: master
+  # setup IAM user with access to beanstalk, add keys into
+  # travis ci via UI as environment variables
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key: $AWS_SECRET_KEY
